@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do List Drag & Drop</title>
+    <style>
+      .task {
+        position: relative; /* needed for absolute positioning of button */
+        padding-right: 30px; /* space for the button */
+      }
+
+      .task button {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #888; /* soft gray */
+        border: none;
+        color: #fff;
+        border-radius: 50%;
+        width: 20px;
+        border: #383535;
+        border-color: #474747;
+        border-radius: 2px;
+        height: 20px;
+        font-weight: bold;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        line-height: 20px;
+        text-align: center;
+        padding: 0;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      .task button:hover {
+        background-color: #555; /* darker gray on hover */
+        transform: scale(1.2);
+      }
+
+      .task button:focus {
+        outline: none;
+      }
+
+      .completed {
+        text-decoration: line-through;
+        color: gray;
+        opacity: 0.7;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5; /* Light gray background #bbb5b5 #f5f5f5*/
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+      h1 {
+        margin-bottom: 20px;
+      }
+      .board {
+        display: flex;
+        gap: 20px;
+        /* justify-content: center;
+        align-items: center; */
+      }
+      .column {
+        background-color: #bbb5b5;
+        border-radius: 5px;
+        padding: 10px;
+        width: 250px;
+        min-height: 300px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 24);
+      }
+      .task {
+        background-color: #383535;
+        padding: 10px;
+        color: #fff;
+        margin-top: 10px;
+        box-shadow: 0 1px 3px rgb(83, 87, 84);
+        border: 1px solid #bbb5b5;
+        cursor: move;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        cursor: grab;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      button {
+        /* margin-bottom: 20px; */
+        padding: 10px 14px;
+        cursor: pointer;
+        background-color: rgb(1, 30, 194);
+        color: rgb(3, 216, 20);
+        font-size: 14px;
+        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+        border: solid 2px rgb(4, 4, 7);
+        border-radius: 5px;
+        transition: color 0.8s, background-color 0.8s, opacity 0.5s;
+        box-shadow: #474747 0px 0px 5px;
+      }
+      button:hover {
+        background-color: rgb(3, 216, 20);
+        color: rgb(1, 30, 194);
+      }
+      button:active {
+        opacity: 0.3;
+      }
+      /* input[type="text"] {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        margin-left: 10px;
+        border: 1px solid rgb(4, 4, 7);
+        border-radius: 5px;
+        font-size: 14px;
+        align-items: top;
+        vertical-align: top;
+      } */
+
+      .box {
+        width: 200px;
+        height: 25px;
+        margin-left: 10px;
+        /* margin-top: 20px; */
+        padding-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid rgb(4, 4, 7);
+        font-size: 14px;
+        display: block;
+        align-items: top;
+        box-shadow: #474747 0px 0px 5px;
+      }
+      .box::placeholder {
+        color: rgb(89, 109, 116);
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .title {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 20px;
+        background-color: #bbb5b5;
+        padding: 10px 10px;
+        border-radius: 5px;
+        width: 300px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="title">To-Do List</h1>
+    <div style="display: flex; align-items: center; margin-bottom: 40px">
+      <button id="addTaskBtn">Add Task</button>
+      <input class="box" type="text" placeholder="Write a new task..." />
+      <span
+        id="taskCounter"
+        style="
+          margin-left: 10px;
+          color: #810404;
+          background-color: #bbb5b5;
+          padding: 10px;
+          border-radius: 5px;
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+          font-weight: bold;
+          box-shadow: #474747 0px 0px 5px;
+        "
+      ></span>
+    </div>
+    <div class="board">
+      <div
+        class="column"
+        id="todo"
+        ondrop="drop(event)"
+        ondragover="allowDrop(event)"
+      >
+        <h3>To Do</h3>
+        <div class="task" draggable="true" ondragstart="drag(event)" id="task1">
+          I need to complete JS course after HTML, CSS, and Flexbox.
+        </div>
+        <div class="task" draggable="true" ondragstart="drag(event)" id="task2">
+          I want to submit my task before the deadline.
+        </div>
+      </div>
+      <div
+        class="column"
+        id="inprogress"
+        ondrop="drop(event)"
+        ondragover="allowDrop(event)"
+      >
+        <h3>In Progress</h3>
+      </div>
+      <div
+        class="column"
+        id="done"
+        ondrop="drop(event)"
+        ondragover="allowDrop(event)"
+      >
+        <h3>Done</h3>
+      </div>
+    </div>
+    <script>
+      let taskCount = 2; // Start from 2 because there are already 2 tasks
+
+      function allowDrop(ev) {
+        ev.preventDefault();
+      }
+
+      function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+      }
+
+      function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+      }
+
+      // Update the counter in the UI
+      function updateCounter() {
+        document.getElementById(
+          "taskCounter"
+        ).textContent = `Total tasks: ${taskCount}`;
+      }
+
+      updateCounter();
+
+      // Function to make a task interactive (complete/edit)
+      function makeTaskInteractive(task) {
+        // Toggle completed on single click
+        task.addEventListener("click", () => {
+          task.classList.toggle("completed");
+        });
+
+        // Edit task text on double click
+        task.addEventListener("dblclick", () => {
+          const newText = prompt("Edit task:", task.textContent);
+          if (newText) task.textContent = newText;
+        });
+      }
+
+      // Make initial tasks interactive
+      document.querySelectorAll(".task").forEach((task) => {
+        makeTaskInteractive(task);
+      });
+
+      // Add new task
+      document
+        .getElementById("addTaskBtn")
+        .addEventListener("click", function () {
+          const inputBox = document.querySelector(".box");
+          const taskText = inputBox.value.trim() || "Task " + (taskCount + 1);
+          taskCount++;
+
+          const newTask = document.createElement("div");
+          newTask.className = "task";
+          newTask.draggable = true;
+          newTask.id = "task" + Date.now();
+          newTask.textContent = taskText;
+          newTask.ondragstart = drag;
+
+          // Make the new task interactive
+          makeTaskInteractive(newTask);
+
+          document.getElementById("todo").appendChild(newTask);
+          updateCounter();
+
+          // Clear input box
+          inputBox.value = "";
+        });
+      // Function to add remove button to a task
+      function addRemoveButton(task) {
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "X";
+        removeBtn.style.float = "right";
+        removeBtn.style.background = "#ff0040"; // make this of obacity 0.5// red is of #ff0000
+        removeBtn.style.opacity = "0.2";
+        removeBtn.style.color = "#fff";
+        removeBtn.style.border = "none";
+        removeBtn.style.borderRadius = "2px";
+        removeBtn.style.padding = "2px 3px";
+        removeBtn.style.cursor = "pointer";
+        removeBtn.addEventListener("click", (e) => {
+          e.stopPropagation(); // prevent click from toggling completed
+          task.remove();
+          taskCount--;
+          updateCounter();
+        });
+        task.appendChild(removeBtn);
+      }
+      function makeTaskInteractive(task) {
+        // Toggle completed on single click
+        task.addEventListener("click", () => {
+          task.classList.toggle("completed");
+        });
+
+        // Edit task text on double click
+        task.addEventListener("dblclick", () => {
+          const newText = prompt("Edit task:", task.textContent);
+          if (newText) task.firstChild.textContent = newText; // keep button intact
+        });
+
+        // Add remove button
+        addRemoveButton(task);
+      }
+      document.querySelectorAll(".task").forEach((task) => {
+        makeTaskInteractive(task);
+      });
+      makeTaskInteractive(newTask); // this automatically adds remove button
+    </script>
+  </body>
+</html>
